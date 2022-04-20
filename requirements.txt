@@ -1,0 +1,6 @@
+Lavalink.py (https://github.com/Devoxin/Lavalink.py)
+loguru
+nextcord  (https://github.com/nextcord/nextcord)
+spotipy (https://github.com/plamere/spotipy)
+
+# Will add more as I get to it.

@@ -1,0 +1,10 @@
+__pycache__
+.idea
+.vscode
+cogs\__pycache__
+internal\__pycache__
+venv
+.cache
+config.py
+test.py
+db_test.py
