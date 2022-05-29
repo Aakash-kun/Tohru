@@ -15,7 +15,7 @@ from internal.load_later_track import LoadLaterTrack
 from config import spotify_client_id, spotify_client_secret
 
 
-url_regex = re.compile(r'https?://(?:www\.)?.+')
+URL_REGEX = re.compile(r'https?://(?:www\.)?.+')
 
 
 spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=spotify_client_id,
@@ -59,7 +59,7 @@ class MusicCommands(commands.Cog):
                 raise commands.CommandInvokeError(
                     'You need to be in my voicechannel.')
 
-    async def play_from_url(self, ctx, player: CustomPlayer, query):
+    async def play_from_url(self, ctx: Context, player: CustomPlayer, query: str):
         """ Play a track from a url. """
         if "open.spotify.com" in query:
             if "track" in query:
@@ -77,9 +77,12 @@ class MusicCommands(commands.Cog):
 
                     partial_track = LoadLaterTrack(
                         query=f"{t['name']} - {t['artists'][0]['name']}",
-                        player=player
+                        lavalink=self.bot.lavalink
                     )
                     player.add(requester=ctx.author.id, track=partial_track)
+
+                await ctx.send(f"Added `{len(tracks)}` tracks to the queue.")
+                return
 
             elif "album" in query:
                 data = spotify.album(query)
@@ -88,9 +91,12 @@ class MusicCommands(commands.Cog):
                 for t in tracks:
                     partial_track = LoadLaterTrack(
                         query=f"{t['name']} - {t['artists'][0]['name']}",
-                        player=player
+                        lavalink=self.bot.lavalink
                     )
                     player.add(requester=ctx.author.id, track=partial_track)
+
+                await ctx.send(f"Added `{len(tracks)}` tracks to the queue.")
+                return
 
             else:
                 raise CommandInvokeError("Unsupported Spotify link.")
@@ -106,14 +112,17 @@ class MusicCommands(commands.Cog):
 
             for track in tracks:
                 player.add(requester=ctx.author.id, track=track)
+            await ctx.send(f"Added `{len(tracks)}` tracks to the queue.")
 
         elif results['loadType'] == 'TRACK_LOADED':
             track = results['tracks'][0]
             player.add(track=track, requester=ctx.author.id)
+            await ctx.send(f"Added `{track['info']['title']}` to the queue.")
 
         elif results['loadType'] == 'SEARCH_RESULT':
             track = results['tracks'][0]
             player.add(track=track, requester=ctx.author.id)
+            await ctx.send(f"Added `{track['info']['title']}` to the queue.")
 
 
 
@@ -122,9 +131,9 @@ class MusicCommands(commands.Cog):
     # TODO: after invoke: play cmd, record the info about the song.
     # TODO: play cmd error, check if dm error, send msg explaining.
 
-    @commands.command()
+    @commands.command(aliases=["p", "pl"])
     async def play(self, ctx: Context, *, query: str):
-        """ Play a song or a playlist from Youtube, SoundCloud, Mixer, Bandcamp or Spotify. """
+        """ Play a song or a playlist from Youtube, SoundCloud, Bandcamp or Spotify. """
         await self.ensure_voice(ctx)
 
         player: CustomPlayer = self.bot.lavalink.player_manager.get(
@@ -132,7 +141,7 @@ class MusicCommands(commands.Cog):
         # Remove leading and trailing <>. <> may be used to suppress embedding links in Discord.
         query = query.strip('<>')
 
-        if url_regex.match(query):
+        if URL_REGEX.match(query):
             await self.play_from_url(ctx, player, query)
         else:
             results = await self.bot.lavalink.get_tracks(f"ytsearch: {query}")
@@ -142,12 +151,13 @@ class MusicCommands(commands.Cog):
 
             track = results['tracks'][0]
             player.add(track=track, requester=ctx.author.id)
+            await ctx.send(f'Added `{track["title"]}` to the player.')
 
         if not player.is_playing:
             await player.play()
 
     @commands.command(aliases=['dc'])
-    async def disconnect(self, ctx):
+    async def disconnect(self, ctx: Context):
         """ Disconnects the player from the voice channel and clears its queue. """
         await self.ensure_voice(ctx)
 
