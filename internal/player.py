@@ -20,9 +20,9 @@ class CustomPlayer(DefaultPlayer):
         if not track:
             if not self.queue:
                 track = None
-
-            pop_at = randrange(len(self.queue)) if self.shuffle else 0
-            track = self.queue.pop(pop_at)
+            else:
+                pop_at = randrange(len(self.queue)) if self.shuffle else 0
+                track = self.queue.pop(pop_at)
 
         if isinstance(track, LoadLaterTrack):
             track = await track.load_track()
