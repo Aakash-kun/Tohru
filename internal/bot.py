@@ -1,4 +1,5 @@
 from traceback import format_exc
+from typing import Optional
 
 from nextcord import Intents, AllowedMentions
 from nextcord.ext import commands
@@ -49,14 +50,19 @@ class BotBase(commands.Bot):
         # self.db = Database()
         # TODO: Will make a better database class later
 
-    def get_wrapped_guild(self, guild_id):
+    def get_wrapped_guild(self, guild_id) -> Optional[MyGuild]:
         """ Returns the guild with the given ID. """
         guild = self._old_get_guild(guild_id)
+        if not guild:
+            return None
         return MyGuild(guild, bot=self)
 
-    async def fetch_wrapped_guild(self, guild_id):
+    async def fetch_wrapped_guild(self, guild_id) -> Optional[MyGuild]:
         """ Returns the guild with the given ID. """
-        guild = await self._old_fetch_guild(guild_id)
+        try:
+            guild = await self._old_fetch_guild(guild_id)
+        except Exception:
+            return None
         return MyGuild(guild, bot=self)
 
     def add_cog(self, cog):

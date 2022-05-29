@@ -30,7 +30,10 @@ class MusicCommands(commands.Cog):
         """ Ensures that the bot is in a voice channel,
         the user is in a voice channel and the user and the bot are in the same vice channel. """
         if ctx.guild is None:
-            raise CommandInvokeError("This command can not be used in DMs.")
+            try:
+                ctx.send('This command can not be used in DMs.')
+            except Exception:
+                pass
 
         player: CustomPlayer = self.bot.lavalink.player_manager.create(
             guild_id=ctx.guild.id)
@@ -161,7 +164,7 @@ class MusicCommands(commands.Cog):
         """ Disconnects the player from the voice channel and clears its queue. """
         await self.ensure_voice(ctx)
 
-        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
+        player: CustomPlayer = self.bot.lavalink.player_manager.get(ctx.guild.id)
         player.queue.clear()
         await player.stop()
         await ctx.voice_client.disconnect(force=True)
