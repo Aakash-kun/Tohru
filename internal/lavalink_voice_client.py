@@ -2,8 +2,8 @@ import nextcord
 import lavalink
 
 class LavalinkVoiceClient(nextcord.VoiceClient):
-    """ This is the preferred way to handle external voice sending. 
-    This client will be created via a cls in the connect method of the channel. 
+    """ This is the preferred way to handle external voice sending.
+    This client will be created via a cls in the connect method of the channel.
     Copy paste from Lavalink.py examples. (It is what it is :) )"""
 
     def __init__(self, client: nextcord.Client, channel: nextcord.abc.Connectable):

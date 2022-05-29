@@ -19,4 +19,4 @@ class MyGuild(Guild):
     def is_configured(self):
         return self.bot.db.check_server(self.guild.id)
 
-# Contributions: Thanks to Skelmis (https://github.com/Skelmis) for helping with this stuff.
+# Contributions: Thanks to Skelmis (https://github.com/Skelmis) for making this. ;)

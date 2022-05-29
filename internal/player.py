@@ -10,9 +10,9 @@ class CustomPlayer(DefaultPlayer):
     """ Custom Player class to add the `LoadLaterTrack` and the song loop functionality. """
     def __init__(self, guild_id, node):
         self._loop = False
-        
+
         super().__init__(guild_id, node)
-            
+
     async def play(self, track: Union[AudioTrack, LoadLaterTrack, Dict] = None,
                    start_time: int = 0, end_time: int = 0, no_replace: bool = False,
                    volume: Optional[int] = None, pause: bool = False):
@@ -31,9 +31,9 @@ class CustomPlayer(DefaultPlayer):
 
     def add(self, track: Union[AudioTrack, LoadLaterTrack, Dict], requester: int = 0, index: int = None):
         return super().add(track, requester, index)
-    
+
     @property
     def song_loop(self):
-        """ Returns the current loop status. 
+        """ Returns the current loop status.
         Lavalink by default loops the queue, this add the song loop functionality. """
         return self._loop

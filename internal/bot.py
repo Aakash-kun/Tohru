@@ -1,19 +1,20 @@
+from traceback import format_exc
+
 from nextcord import Intents, AllowedMentions
 from nextcord.ext import commands
 
 import lavalink
 
 from loguru import logger
-from traceback import format_exc
 
 from internal.guild import MyGuild
-from internal.db import Database
+# from internal.db import Database
 from internal.player import CustomPlayer
 
 
 class BotBase(commands.Bot):
     """ Custom Bot Class to add more functionalities """
-    
+
     def __init__(self, *args, **kwargs):
 
         logger.info("Starting up the bot's engine...")
@@ -24,13 +25,13 @@ class BotBase(commands.Bot):
                          help_command=None,
                          intents=intents,
                          allowed_mentions=AllowedMentions(
-                             roles=False, 
-                             everyone=False, 
+                             roles=False,
+                             everyone=False,
                              users=False
                              ),
                          *args,
                          **kwargs)
-        
+
         # helps to add persistent views
         self.persistent_views_added = False
 
@@ -45,9 +46,9 @@ class BotBase(commands.Bot):
         self.fetch_guild = self.fetch_wrapped_guild
 
         # initiating the database
-        # self.db = Database()  
+        # self.db = Database()
         # TODO: Will make a better database class later
-        
+
     def get_wrapped_guild(self, guild_id):
         """ Returns the guild with the given ID. """
         guild = self._old_get_guild(guild_id)
@@ -67,9 +68,9 @@ class BotBase(commands.Bot):
         for ext in exts:
             try:
                 self.load_extension(ext)
-            except Exception as e:
+            except Exception as err:
                 logger.error(
-                    f"Error while loading {ext}: {e}:\n{format_exc()}")
+                    f"Error while loading {ext}: {err}:\n{format_exc()}")
             else:
                 logger.info(f"Successfully loaded extension {ext}.")
 

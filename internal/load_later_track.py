@@ -4,8 +4,9 @@ from lavalink import LoadResult, Client
 
 
 class LoadLaterTrack:
-    """ This class is used to load tracks when they are played. 
-    It will lessen the burden on Lavalink server and save a lot of time while queuing playlists or albums. """
+    """ This class is used to load tracks when they are played.
+    It will lessen the burden on Lavalink server and save a
+    lot of time while queuing playlists or albums. """
     def __init__(self, query, lavalink) -> None:
         self.title = query
         self.query = query

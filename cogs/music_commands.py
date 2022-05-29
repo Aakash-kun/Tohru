@@ -1,10 +1,10 @@
-import nextcord
+import re
+
+# import nextcord
 from nextcord.ext import commands
 from nextcord.ext.commands import Context, CommandInvokeError
 
-import re
-
-import lavalink
+# import lavalink
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
@@ -19,7 +19,7 @@ url_regex = re.compile(r'https?://(?:www\.)?.+')
 
 
 spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=spotify_client_id,
-                                                                client_secret=spotify_client_secret))
+                                                            client_secret=spotify_client_secret))
 
 
 class MusicCommands(commands.Cog):
@@ -27,7 +27,7 @@ class MusicCommands(commands.Cog):
         self.bot = bot
 
     async def ensure_voice(self, ctx: Context):
-        """ Ensures that the bot is in a voice channel, 
+        """ Ensures that the bot is in a voice channel,
         the user is in a voice channel and the user and the bot are in the same vice channel. """
         if ctx.guild is None:
             raise CommandInvokeError("This command can not be used in DMs.")
@@ -65,22 +65,22 @@ class MusicCommands(commands.Cog):
             if "track" in query:
                 track = spotify.track(query)
                 query = f"ytsearch:{track['name']} - {track['artists'][0]['name']}"
-                
+
                 results = await self.bot.lavalink.get_tracks(query)
-                
+
             elif "playlist" in query:
                 data = spotify.playlist(query)
                 tracks = data['tracks']['items']
 
                 for track in tracks:
                     t = track['track']
-                    
+
                     partial_track = LoadLaterTrack(
                         query=f"{t['name']} - {t['artists'][0]['name']}",
                         player=player
                     )
                     player.add(requester=ctx.author.id, track=partial_track)
-                    
+
             elif "album" in query:
                 data = spotify.album(query)
                 tracks = data['tracks']['items']
@@ -91,34 +91,34 @@ class MusicCommands(commands.Cog):
                         player=player
                     )
                     player.add(requester=ctx.author.id, track=partial_track)
-                    
+
             else:
                 raise CommandInvokeError("Unsupported Spotify link.")
-            
+
         else:
             results = await self.bot.lavalink.get_tracks(query)
-        
+
         if not results or not results['tracks']:
             return await ctx.send('Nothing found!')
-        
+
         if results['loadType'] == 'PLAYLIST_LOADED':
             tracks = results['tracks']
 
             for track in tracks:
                 player.add(requester=ctx.author.id, track=track)
-                
-        elif results['loadType'] == 'TRACK_LOADED':   
-            track = results['tracks'][0]
-            player.add(track=track, requester=ctx.author.id)
-            
-        elif results['loadType'] == 'SEARCH_RESULT':           
-            track = results['tracks'][0]
-            player.add(track=track, requester=ctx.author.id)
-        
-        
-    
 
-    # TODO: before invoke: play cmd, ask the user to accept to privacy policy of data. (recording the songs played to give stats)
+        elif results['loadType'] == 'TRACK_LOADED':
+            track = results['tracks'][0]
+            player.add(track=track, requester=ctx.author.id)
+
+        elif results['loadType'] == 'SEARCH_RESULT':
+            track = results['tracks'][0]
+            player.add(track=track, requester=ctx.author.id)
+
+
+
+    # TODO: before invoke: play cmd, ask the user to accept to privacy policy of data.
+    # (recording the songs played to give stats)
     # TODO: after invoke: play cmd, record the info about the song.
     # TODO: play cmd error, check if dm error, send msg explaining.
 
@@ -142,23 +142,24 @@ class MusicCommands(commands.Cog):
 
             track = results['tracks'][0]
             player.add(track=track, requester=ctx.author.id)
-            
+
         if not player.is_playing:
             await player.play()
-            
+
     @commands.command(aliases=['dc'])
     async def disconnect(self, ctx):
         """ Disconnects the player from the voice channel and clears its queue. """
         await self.ensure_voice(ctx)
-                
-        player = self.bot.lavalink.player_manager.get(ctx.guild.id)        
+
+        player = self.bot.lavalink.player_manager.get(ctx.guild.id)
         player.queue.clear()
         await player.stop()
         await ctx.voice_client.disconnect(force=True)
         await ctx.send('*⃣ | Disconnected.')
-        
+
     # TODO: More commands to be added. Leave it to me.
 
 
 def setup(bot: BotBase):
+    ''' Adds the MusicCommands cog to the bot. '''
     bot.add_cog(MusicCommands(bot))
