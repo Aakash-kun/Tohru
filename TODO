@@ -1,0 +1,68 @@
+INDEX:
+    WHITEPAPER = Line 7 (Explains the plans for the rewrite and fututre of the bot.)
+    TODO LIST = Line 46 (List of things to do now and in future.)
+
+
+
+WHITEPAPER OF TOHRU V2:
+
+    GOAL: To rewrite Tohru with a new lib (Wavelink --> Lavalink.py), 
+        fix the permissions issues (Will have to check for permissions in literally every command), 
+        make the bot more stable, 
+        and to add new features like: statistics, custom and public playlists in Tohru, Autoplay command, and more.
+
+        PLANS FOR THE GOAL:
+            Music Commands and Events: I am working on them, leave it to me.
+
+            Permissions: Need a full list of permissions required to run different features (of v1) and implement them.
+
+            Custom Playlists: The idea is to have a way to create custom playlists in Tohru's Database and have them be able to be played by anyone. (for this i am thinking to integrate Spotify's API and search for playlists in it.)
+                - Public Playlists: Users will be able to create public playlists and have them be able to be played by anyone. 
+                - Private Playlists: Users will be able to create private playlists and have them be able to be played by only the owner.
+            
+            Autoplay: With this command, user will provide a song and the bot will automatically search and play related songs to it. Will use Spotify and other different API's to search for related songs. (This is a feature that will be implemented in the future, after the rewrite is completed.)
+            
+            Statistics: The idea is to record some info about the songs being played and then we can use that data to provide some fun stats to the users and for our own use.
+                - for stats, we will record these stuffs of the song played:
+                    - song's identifier (song ID)
+                    - song name
+                    - author name (song uploader)
+                    - song requestor ID (the discord user who requested the song)
+                    - song requestor guild ID (the guild the user requested the song)
+                    - month of the song request.
+                - now, we can use this data to get some fun stats like: 
+                    - Overall stats: "In the month April, a total of `x` songs were requested by `y` users."
+                    - User stats: "In the month April, `x` songs were requested by you."
+                    - Guild stats: "In the month April, `x` songs were requested by users in your server."
+                    - Most Played Song: "In the month April, `x` songs was requested `y` times."
+                    - Most Played Song by User: "In the month April, `x` songs was requested `y` times by you."
+                    - Most Played Song by Guild: "In the month April, `x` songs was requested `y` times by users in your server."
+                - after every month, we will clear the songs table and shift the *stats of it* to another table (stats table, it will record only the stats of previous months), and start recording new songs of the month.
+                - so for statistics, we will need to make 2 tables:
+                    - stats table: will record the stats of the songs played in the past months.
+                    - songs table: will record the songs played in the current month.
+
+
+TODO:
+
+    CURRENT TODO LIST:
+        - Whole Database thing, using aiosqlite or something better. Making the Tables and making the definations to record and fetch stuff from that tables.
+            - Tables:
+                - songs: will record the songs played in the current month.
+                - stats: will record the stats of the songs played in the past months.
+                - guilds: will record the configured guilds and their channel ids. (the channel where tohru is configured to play music in.)
+        - Permissions:
+            - Make a list of permissions required to run different features (of v1) and implementing them.
+        - Music Commands and Events: I am working on them, leave it to me.
+        - AutoPlay command: will have to do some research on how to get the best related songs. (i have done some, lemme know if you are interested in AutoPlay research.)
+        - Developer Control Panel: will have to make a control panel for the developer to control the bot locally from discord. (This thing is very vast, literally anything can be done, for now i have no ideas on what to do in it. I just need some basic dev controls like: Shutdown, restart, etc.)
+            - Shutdown: Send a msg to the configured channels if the bot gets down for update.
+        - UI: Have to work on the UI of the bot. (i am planning to make the bot work without setting up a channel for it.)
+        - All the files has some TODOs written in them. (you can go through them and see what needs to be done.)
+
+    FUTURE TODO LIST:
+        - Custom Playlist.
+        - Logging channel for servers. (will make a channel for specfic servers, and log the events of the bot in that channel.)
+        - Random Commands:
+            - Playing a persons currently playing spotify song.
+            - Make a share song command, it will search songs on the supported platforms and then share links from them.
