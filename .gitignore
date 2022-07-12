@@ -4,6 +4,7 @@ __pycache__
 cogs\__pycache__
 internal\__pycache__
 venv
+.venv
 .cache
 config.py
 tests
