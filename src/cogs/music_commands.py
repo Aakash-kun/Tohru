@@ -9,26 +9,24 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
 from internal.lavalink_voice_client import LavalinkVoiceClient
-from internal.bot import BotBase
 from internal.player import CustomPlayer
 from internal.load_later_track import LoadLaterTrack
-from config import spotify_client_id, spotify_client_secret
-
+from internal.bot_base import BotBaseBot
 
 URL_REGEX = re.compile(r'https?://(?:www\.)?.+')
 
 
-spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=spotify_client_id,
-                                                            client_secret=spotify_client_secret))
 
 
 class MusicCommands(commands.Cog):
-    def __init__(self, bot: BotBase) -> None:
+    def __init__(self, bot: BotBaseBot) -> None:
         self.bot = bot
+        self.spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials(client_id=self.bot.config.get("spotify_client_id"), client_secret=self.bot.config.get("spotify_client_secret")))
 
     async def ensure_voice(self, ctx: Context):
-        """ Ensures that the bot is in a voice channel,
-        the user is in a voice channel and the user and the bot are in the same vice channel. """
+        """Ensures that the bot is in a voice channel,
+        the user is in a voice channel and the user and the bot are in the same voice channel.
+        """
         if ctx.guild is None:
             try:
                 ctx.send('This command can not be used in DMs.')
@@ -66,13 +64,13 @@ class MusicCommands(commands.Cog):
         """ Play a track from a url. """
         if "open.spotify.com" in query:
             if "track" in query:
-                track = spotify.track(query)
+                track = self.spotify.track(query)
                 query = f"ytsearch:{track['name']} - {track['artists'][0]['name']}"
 
                 results = await self.bot.lavalink.get_tracks(query)
 
             elif "playlist" in query:
-                data = spotify.playlist(query)
+                data = self.spotify.playlist(query)
                 tracks = data['tracks']['items']
 
                 for track in tracks:
@@ -88,7 +86,7 @@ class MusicCommands(commands.Cog):
                 return
 
             elif "album" in query:
-                data = spotify.album(query)
+                data = self.spotify.album(query)
                 tracks = data['tracks']['items']
 
                 for t in tracks:
@@ -173,6 +171,6 @@ class MusicCommands(commands.Cog):
     # TODO: More commands to be added. Leave it to me.
 
 
-def setup(bot: BotBase):
-    ''' Adds the MusicCommands cog to the bot. '''
+def setup(bot: BotBaseBot):
+    """Adds the MusicCommands cog to the bot."""
     bot.add_cog(MusicCommands(bot))
