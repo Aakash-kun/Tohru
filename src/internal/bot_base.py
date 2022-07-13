@@ -1,59 +1,61 @@
-from typing import Union
+from typing import Optional, Union
 from nextcord.abc import GuildChannel
 from nextcord.ext import commands
 from nextcord import Guild, Member, User
 from nextcord.ext import commands
 
-class BotBaseBot(commands.Bot):
-	async def getch_guild(self, guild_id: int) -> Union[Guild, bool]:
+class BotBase(commands.Bot):
+	async def get_or_fetch_guild(self, guild_id: int) -> Optional[Guild]:
 		"""Looks up a guild in cache or fetches if not found."""
-		guild: Union[Guild, None] = self.get_guild(guild_id)
+		guild: Optional[Guild] = self.get_guild(guild_id)
 		if guild:
 			return guild
 
 		try:
-			guild: Union[Guild, None] = await self.fetch_guild(guild_id)
+			guild: Guild = await self.fetch_guild(guild_id)
 		except:
 			return False
+
 		return guild
 
-	async def getch_user(self, user_id: int) -> Union[User, bool]:
+	async def get_or_fetch_user(self, user_id: int) -> Optional[User]:
 		"""Looks up a user in cache or fetches if not found."""
-		user: Union[User, None] = self.get_user(user_id)
+		user: Optional[User] = self.get_user(user_id)
 		if user:
 			return user
 		try:
-			user: Union[User, None] = await self.fetch_user(user_id)
+			user: User = await self.fetch_user(user_id)
 		except:
 			return False
+
 		return user
 
-	async def getch_member(self, guild_id: int, member_id: int) -> Union[Member, bool]:
+	async def get_or_fetch_member(self, guild_id: int, member_id: int) -> Optional[Member]:
 		"""Looks up a member in cache or fetches if not found."""
 
-		guild: Union[Member, None] = await self.getch_guild(guild_id)
+		guild: Optional[Guild] = await self.get_or_fetch_guild(guild_id)
 		if not guild:
 			return False
 
-		member: Union[Member, None] = guild.get_member(member_id)
+		member: Optional[Member] = guild.get_member(member_id)
 		if member is not None:
 			return member
 
 		try:
-			member: Union[Member, None] = await guild.fetch_member(member_id)
+			member: Member = await guild.fetch_member(member_id)
 		except:
 			return False
 
 		return member
 
-	async def getch_channel(self, channel_id: int) -> Union[GuildChannel, bool]:
+	async def get_or_fetch_channel(self, channel_id: int):
 		"""Looks up a channel in cache or fetches if not found."""
-		channel: Union[GuildChannel, None] = self.get_channel(channel_id)
+		channel = self.get_channel(channel_id)
 		if channel:
 			return channel
 
 		try:
-			channel: Union[GuildChannel, None] = await self.fetch_channel(channel_id)
+			channel = await self.fetch_channel(channel_id)
 		except:
 			return False
 
