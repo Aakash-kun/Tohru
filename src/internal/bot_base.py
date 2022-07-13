@@ -3,7 +3,6 @@ from nextcord.abc import GuildChannel
 from nextcord.ext import commands
 from nextcord import Guild, Member, User
 from nextcord.ext import commands
-from aiosqlite.core import Connection
 
 class BotBaseBot(commands.Bot):
 	async def getch_guild(self, guild_id: int) -> Union[Guild, bool]:

@@ -1,6 +1,7 @@
-from bot_base import BotBaseBot
+from internal.bot_base import BotBaseBot
 from nextcord import Intents
-from config_handler import Config
+from internal.config_handler import Config
+# from internal.database_handlers import DatabaseHandler
 import aiosqlite
 
 bot: BotBaseBot = BotBaseBot(command_prefix=".", intents=Intents.all(), strip_after_prefix=True)

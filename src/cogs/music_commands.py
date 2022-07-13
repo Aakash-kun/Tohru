@@ -11,7 +11,7 @@ from spotipy.oauth2 import SpotifyClientCredentials
 from internal.lavalink_voice_client import LavalinkVoiceClient
 from internal.player import CustomPlayer
 from internal.load_later_track import LoadLaterTrack
-from bot_base import BotBaseBot
+from internal.bot_base import BotBaseBot
 
 URL_REGEX = re.compile(r'https?://(?:www\.)?.+')
 
